@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_complete_guide/widgets/chart_bar.dart';
 import 'package:intl/intl.dart';
 
-import '../models/transaction.dart';
 import './chart_bar.dart';
+import '../models/transaction.dart';
 
 class Chart extends StatelessWidget {
   final List<Transaction> recentTransactions;
@@ -16,6 +15,7 @@ class Chart extends StatelessWidget {
         Duration(days: index),
       );
       var totalSum = 0.0;
+
       for (var i = 0; i < recentTransactions.length; i++) {
         if (recentTransactions[i].date.day == weekDay.day &&
             recentTransactions[i].date.month == weekDay.month &&
@@ -33,7 +33,7 @@ class Chart extends StatelessWidget {
 
   double get totalSpending {
     return groupedTransactionValues.fold(0.0, (sum, item) {
-      return sum + (item['amount'] as double);
+      return sum + item['amount'];
     });
   }
 
@@ -46,19 +46,18 @@ class Chart extends StatelessWidget {
         padding: EdgeInsets.all(10),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: groupedTransactionValues.map(
-            (data) {
-              return Flexible(
-                fit: FlexFit.tight,
-                child: ChartBar(
-                    data['day'],
-                    data['amount'],
-                    totalSpending == 0.0
-                        ? 0.0
-                        : (data['amount'] as double) / totalSpending),
-              );
-            },
-          ).toList(),
+          children: groupedTransactionValues.map((data) {
+            return Flexible(
+              fit: FlexFit.tight,
+              child: ChartBar(
+                data['day'],
+                data['amount'],
+                totalSpending == 0.0
+                    ? 0.0
+                    : (data['amount'] as double) / totalSpending,
+              ),
+            );
+          }).toList(),
         ),
       ),
     );
